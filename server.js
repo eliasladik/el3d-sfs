@@ -3,6 +3,7 @@ const cors = require('cors');
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const fs = require('fs');
+const packageJson = require('./package.json');
 
 const app = express();
 app.use(cors());
@@ -148,6 +149,11 @@ app.post('/api/config/update', (req, res) => {
 // ===================================================
 // 3. SPUŠTĚNÍ SERVERU NA PORTU 5001 (BEZPEČNÉ PRO MAC)
 // ===================================================
+// API pro získání aktuální verze aplikace
+app.get('/api/version', (req, res) => {
+    res.json({ version: packageJson.version });
+});
+
 const PORT = 5001;
 app.listen(PORT, () => {
     console.log(`Smart Filament System API (SQLite Multi-User) bezi na portu ${PORT}`);

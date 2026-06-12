@@ -16,7 +16,7 @@ Systém je navržen s důrazem na čistý "dark motorsport" design, bleskovou od
 - 🔐 **Multi-User Architektura:** Nezávislé účty a regály pro různé tiskaře v jedné dílně.
 - 🗄️ **Lokální SQLite Databáze:** Rychlé a spolehlivé ukládání dat do jednoho souboru (`database.sqlite`), žádné složité nastavování SQL serverů.
 - 📊 **Telemetrie Skladu:** Výpočet kapacity regálu, celkové váhy a vizuální progress-bary pro každou cívku.
-- 🎨 **Dark / Motorsport UI:** Moderní uživatelské rozhraní postavené na Tailwind CSS s podporou dynamických notifikací a částicových animací.
+- 🎨 **Dark UI:** Moderní uživatelské rozhraní postavené na Tailwind CSS s podporou dynamických notifikací a částicových animací.
 - 📱 **Mobile Ready:** Plně responzivní design optimalizovaný pro ovládání z mobilního telefonu přímo u 3D tiskárny.
 - ⚙️ **Dynamická konfigurace:** Správa vlastních materiálů (PLA, PETG, PCCF, NYLON...), hlídání kritického stavu (Low Stock Limit) a bezpečné odhlašování.
 

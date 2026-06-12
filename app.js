@@ -79,7 +79,19 @@ function startParticleAnimation() {
 function stopParticleAnimation() { if (particleAnimationId) { cancelAnimationFrame(particleAnimationId); particleAnimationId = null; } }
 
 // HLAVNÍ SPOUŠTĚČ PO NAČTENÍ STRÁNKY
-window.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('DOMContentLoaded', async () => { // <-- Tady přibylo slovo 'async'
+    
+    // --- NOVÉ: Automatické načtení verze z backendu ---
+    try {
+        const versionRes = await fetch(`${API_URL}/version`);
+        const versionData = await versionRes.json();
+        const appVersion = `v${versionData.version}`;
+        document.querySelectorAll('.app-version-display').forEach(el => el.innerText = appVersion);
+    } catch (err) {
+        console.error("Nepodařilo se načíst verzi aplikace:", err);
+    }
+    // ---------------------------------------------------
+
     // Inicializace přepínání oka u hesla
     initPasswordToggle();
 
@@ -100,7 +112,6 @@ window.addEventListener('DOMContentLoaded', () => {
         });
     } else { lucide.createIcons(); startParticleAnimation(); }
 });
-
 // PŘIDÁNO: Funkce pro oživení ikonky oka u zadávání hesla
 function initPasswordToggle() {
     const passwordInput = document.getElementById('login-password');

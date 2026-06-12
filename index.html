@@ -26,7 +26,7 @@
                                 SFS
                             </div>
                         </div>
-                        <span class="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Smart Filament System</span>
+                        <span class="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Smart Filament System<span class="app-version-display text-red-500 font-mono ml-1"></span></span>
                     </div>
 
                     <form onsubmit="handleLogin(event)" class="space-y-4">
@@ -249,7 +249,11 @@
     </div>
 
     <footer class="w-full border-t border-slate-900 bg-slate-900/40 py-4 mt-12 text-center text-xs text-slate-600 font-medium tracking-wide backdrop-blur-sm">
-        <div class="max-w-7xl mx-auto px-4">&copy; 2026 EL3D SFS. Všechna práva vyhrazená.</div>
+        <div class="max-w-7xl mx-auto px-4 flex justify-center items-center gap-2">
+            &copy; 2026 EL3D SFS. Všechna práva vyhrazená. 
+            <span class="text-slate-800">|</span> 
+            <span class="app-version-display font-mono text-slate-500"></span>
+        </div>
     </footer>
 
     <script src="app.js"></script>
