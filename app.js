@@ -50,9 +50,37 @@ function switchAuthMode(mode) {
     }
 }
 
-function handleForgotPassword() {
-    const email = prompt("Zadej svou e-mailovou adresu pro obnovu hesla:");
-    if (email) { alert(`Žádost odeslána na ${email}. Pokud účet existuje, kontaktuj správce EL3D pro potvrzení resetu.`); }
+// KOMPLETNÍ FUNKCE PRO ZAPOMENUTÉ HESLO V app.js
+async function handleForgotPassword() {
+    console.log("▶️ Funkce handleForgotPassword byla spuštěna"); // TESTOVACÍ LOG DO PROHLÍŽEČE
+    
+    const email = prompt("Zadej svou registrovanou e-mailovou adresu:");
+    if (!email) {
+        console.log("❌ Uživatel zadávání e-mailu zrušil.");
+        return;
+    }
+
+    console.log(`📡 Odesílám požadavek na reset pro email: ${email}`);
+
+    try {
+        const response = await fetch(`${API_URL}/forgot-password`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: email.trim() })
+        });
+        
+        console.log("📥 Odpověď z backendu dorazila, stav:", response.status);
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+            alert(data.message);
+        } else {
+            alert(data.message || "E-mail se nepodařilo ověřit.");
+        }
+    } catch (err) {
+        console.error("❌ Chyba fetch komunikace:", err);
+        alert("Chyba spojení se serverem při obnově hesla.");
+    }
 }
 
 async function handleSignup(e) {

@@ -4,6 +4,8 @@ const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const fs = require('fs');
 
+const mailer = require('./mailer');
+
 // TAŽENÍ VERZE ČISTĚ PŘES REQUIRE Z PACKAGE.JSON
 const packageJson = require('./package.json');
 const appVersion = packageJson.version || '1.0.0';
@@ -141,6 +143,59 @@ app.post('/api/config/update', (req, res) => {
     const { user, config } = req.body;
     db.run("UPDATE config SET value = ? WHERE username = ?", [JSON.stringify(config), user], function(err) {
         if (err) return res.status(500).json({ error: err.message }); res.sendStatus(200);
+    });
+});
+
+/// ===================================================
+// RESET HESLA VYUŽÍVAJÍCÍ IMPORTOVANÝ MAILER (OPRAVENO)
+// ===================================================
+app.post('/api/forgot-password', (req, res) => {
+    const { email } = req.body;
+    const cleanEmail = email ? email.trim().toLowerCase() : '';
+
+    if (!cleanEmail) return res.status(400).json({ success: false, message: "E-mail je povinný!" });
+
+    db.all("SELECT username, value FROM config", [], (err, rows) => {
+        if (err) return res.status(500).json({ success: false, error: err.message });
+
+        let targetUser = null;
+        let userConfig = null;
+
+        for (const row of rows) {
+            try {
+                const cfg = JSON.parse(row.value);
+                // OPRAVA: Očištění obou e-mailů od mezer a převod na malá písmena pro 100% shodu
+                if (cfg.email && cfg.email.trim().toLowerCase() === cleanEmail) {
+                    targetUser = row.username;
+                    userConfig = cfg;
+                    break;
+                }
+            } catch (e) {}
+        }
+
+        if (!targetUser) {
+            return res.status(404).json({ success: false, message: "Tento e-mail v systému EL3D neregistrujeme!" });
+        }
+
+        // Generování nového hesla
+        const newPassword = Math.random().toString(36).substring(2, 8).toUpperCase();
+        userConfig.systemPassword = newPassword;
+
+        // OPRAVA: Odstraněno klíčové slovo async z callbacku, které blokovalo provádění uvnitř SQLite
+        db.run("UPDATE config SET value = ? WHERE username = ?", [JSON.stringify(userConfig), targetUser], (updateErr) => {
+            if (updateErr) return res.status(500).json({ success: false, error: updateErr.message });
+
+            // Volání maileru pomocí standardního .then() / .catch(), aby callback správně předal data
+            mailer.sendResetEmail(cleanEmail, targetUser, newPassword)
+                .then(() => {
+                    console.log(`📧 Resetovací mail úspěšně odeslán pro: ${targetUser}`);
+                    res.json({ success: true, message: "Nové heslo bylo odesláno na tvůj e-mail!" });
+                })
+                .catch((mailErr) => {
+                    console.error("❌ Kritická chyba v mailer.js / SMTP serveru:", mailErr);
+                    res.status(500).json({ success: false, message: "Heslo se změnilo, ale mail neodešel. Zkontroluj přihlášení Seznamu." });
+                });
+        });
     });
 });
 
