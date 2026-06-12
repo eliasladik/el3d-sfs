@@ -17,50 +17,114 @@
             <canvas id="login-particles" class="absolute inset-0 w-full h-full pointer-events-none opacity-45"></canvas>
             <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(220,38,38,0.04)_0%,transparent_65%)] pointer-events-none"></div>
             
-            <div class="relative bg-slate-900/90 border border-slate-800 rounded-2xl max-w-sm w-full p-8 shadow-2xl backdrop-blur-sm flex flex-col justify-between min-h-[460px]">
+            <div class="relative bg-slate-900/90 border border-slate-800 rounded-2xl max-w-sm w-full p-8 shadow-2xl backdrop-blur-sm flex flex-col justify-between min-h-[550px]">
                 <div>
-                    <div class="flex flex-col items-center justify-center select-none mb-6 gap-1.5">
+                    <div class="flex flex-col items-center justify-center select-none mb-5 gap-1.5">
                         <div class="flex items-center gap-2.5">
                             <span class="text-2xl font-black tracking-tight text-white italic">EL3D</span>
                             <div class="bg-red-600 text-white font-black italic tracking-tighter px-2.5 py-1 rounded-md text-base shadow-md shadow-red-600/20 transform -skew-x-12">
                                 SFS
                             </div>
                         </div>
-                        <span class="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Smart Filament System<span class="app-version-display text-red-500 font-mono ml-1"></span></span>
+                        <div class="flex items-center gap-2">
+                            <span class="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Smart Filament System</span>
+                            <span id="system-version-badge" class="text-[9px] font-mono bg-slate-950 text-slate-500 px-1.5 py-0.5 rounded border border-slate-850">...</span>
+                        </div>
                     </div>
 
-                    <form onsubmit="handleLogin(event)" class="space-y-4">
-                        <div>
-                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">Uživatelské jméno</label>
-                            <div class="relative">
-                                <i data-lucide="user" class="absolute left-3 top-2.5 w-4 h-4 text-slate-500"></i>
-                                <input type="text" id="login-username" required placeholder="admin" class="w-full bg-slate-950 border border-slate-800 rounded-lg pl-10 pr-3 py-2 text-white text-sm focus:outline-none focus:border-red-500 transition-colors">
+                    <div id="auth-login-box" class="space-y-4 animate-fadeIn">
+                        <form onsubmit="handleLogin(event)" class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">Uživatelské jméno</label>
+                                <div class="relative">
+                                    <i data-lucide="user" class="absolute left-3 top-2.5 w-4 h-4 text-slate-500"></i>
+                                    <input type="text" id="login-username" required placeholder="admin" class="w-full bg-slate-950 border border-slate-800 rounded-lg pl-10 pr-3 py-2 text-white text-sm focus:outline-none focus:border-red-500 transition-colors">
+                                </div>
                             </div>
-                        </div>
-                        
-                        <div>
-                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">Přístupové heslo</label>
-                            <div class="relative flex items-center">
-                                <i data-lucide="lock" class="absolute left-3 top-2.5 w-4 h-4 text-slate-500"></i>
-                                <input type="password" id="login-password" required placeholder="••••••••" class="w-full bg-slate-950 border border-slate-800 rounded-lg pl-10 pr-10 py-2 text-white text-sm focus:outline-none focus:border-red-500 transition-colors">
-                                <button type="button" onclick="togglePasswordVisibility()" class="absolute right-3 text-slate-500 hover:text-red-500 transition-colors cursor-pointer select-none">
-                                    <i id="password-toggle-icon" data-lucide="eye" class="w-4 h-4"></i>
-                                </button>
+                            
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">Přístupové heslo</label>
+                                <div class="relative flex items-center">
+                                    <i data-lucide="lock" class="absolute left-3 top-2.5 w-4 h-4 text-slate-500"></i>
+                                    <input type="password" id="login-password" required placeholder="••••••••" class="w-full bg-slate-950 border border-slate-800 rounded-lg pl-10 pr-10 py-2 text-white text-sm focus:outline-none focus:border-red-500 transition-colors">
+                                    <button type="button" onclick="togglePasswordVisibility('login-password', 'login-eye-icon')" class="absolute right-3 text-slate-500 hover:text-red-500 transition-colors cursor-pointer select-none">
+                                        <i id="login-eye-icon" data-lucide="eye" class="w-4 h-4"></i>
+                                    </button>
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="flex items-center gap-2 py-1 select-none">
-                            <input type="checkbox" id="login-remember" class="w-4 h-4 rounded bg-slate-950 border-slate-800 text-red-600 focus:ring-red-500/20 accent-red-600 cursor-pointer">
-                            <label for="login-remember" class="text-xs font-medium text-slate-400 cursor-pointer hover:text-slate-300 transition-colors">Zůstat přihlášen na tomto zařízení</label>
-                        </div>
+                            <div class="flex items-center justify-between py-1 select-none">
+                                <div class="flex items-center gap-2">
+                                    <input type="checkbox" id="login-remember" class="w-4 h-4 rounded bg-slate-950 border-slate-800 text-red-600 focus:ring-red-500/20 accent-red-600 cursor-pointer">
+                                    <label for="login-remember" class="text-xs font-medium text-slate-400 cursor-pointer hover:text-slate-300 transition-colors">Zůstat přihlášen</label>
+                                </div>
+                                <button type="button" onclick="handleForgotPassword()" class="text-xs text-slate-500 hover:text-red-400 transition-colors cursor-pointer font-medium hover:underline">Zapomněl jsi heslo?</button>
+                            </div>
 
-                        <div id="login-error" class="hidden text-xs text-red-400 font-medium bg-red-950/30 border border-red-900/30 p-2.5 rounded-lg text-center animate-fadeIn">
-                            Nesprávné jméno nebo heslo!
+                            <div id="login-error" class="hidden text-xs text-red-400 font-medium bg-red-950/30 border border-red-900/30 p-2.5 rounded-lg text-center"></div>
+                            
+                            <button type="submit" class="w-full py-2.5 bg-red-600 hover:bg-red-500 text-white font-bold rounded-lg text-sm transition-all tracking-wide cursor-pointer shadow-md shadow-red-600/10 active:scale-[0.98]">
+                                Vstoupit do systému
+                            </button>
+                        </form>
+                        <div class="text-center mt-4">
+                            <p class="text-xs text-slate-400">Nemáš ještě svůj regál? <button onclick="switchAuthMode('signup')" class="text-red-400 font-bold hover:underline cursor-pointer">Zaregistruj se</button></p>
                         </div>
-                        <button type="submit" class="w-full py-2.5 bg-red-600 hover:bg-red-500 text-white font-bold rounded-lg text-sm transition-all tracking-wide cursor-pointer mt-1 shadow-md shadow-red-600/10 active:scale-[0.98]">
-                            Vstoupit do systému
-                        </button>
-                    </form>
+                    </div>
+
+                    <div id="auth-signup-box" class="hidden space-y-4 animate-fadeIn">
+                        <h3 class="text-sm font-bold text-center text-slate-300 uppercase tracking-wider mb-1">Nový tiskařský účet</h3>
+                        <form onsubmit="handleSignup(event)" class="space-y-3">
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Uživatelské jméno</label>
+                                <div class="relative">
+                                    <i data-lucide="user-plus" class="absolute left-3 top-2.5 w-4 h-4 text-slate-500"></i>
+                                    <input type="text" id="signup-username" required placeholder="např. kamos3d" class="w-full bg-slate-950 border border-slate-800 rounded-lg pl-10 pr-3 py-1.5 text-white text-sm focus:outline-none focus:border-red-500 transition-colors">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">E-mailová adresa</label>
+                                <div class="relative">
+                                    <i data-lucide="mail" class="absolute left-3 top-2.5 w-4 h-4 text-slate-500"></i>
+                                    <input type="email" id="signup-email" required placeholder="kamos@seznam.cz" class="w-full bg-slate-950 border border-slate-800 rounded-lg pl-10 pr-3 py-1.5 text-white text-sm focus:outline-none focus:border-red-500 transition-colors">
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Zadat heslo</label>
+                                <div class="relative flex items-center">
+                                    <i data-lucide="key-round" class="absolute left-3 top-2.5 w-4 h-4 text-slate-500"></i>
+                                    <input type="password" id="signup-password" required placeholder="Minimálně 3 znaky" class="w-full bg-slate-950 border border-slate-800 rounded-lg pl-10 pr-10 py-1.5 text-white text-sm focus:outline-none focus:border-red-500 transition-colors">
+                                    <button type="button" onclick="togglePasswordVisibility('signup-password', 'signup-eye-1')" class="absolute right-3 text-slate-500 hover:text-red-500 transition-colors cursor-pointer select-none">
+                                        <i id="signup-eye-1" data-lucide="eye" class="w-4 h-4"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Potvrdit heslo</label>
+                                <div class="relative flex items-center">
+                                    <i data-lucide="check-square" class="absolute left-3 top-2.5 w-4 h-4 text-slate-500"></i>
+                                    <input type="password" id="signup-password-confirm" required placeholder="Zadej heslo znovu" class="w-full bg-slate-950 border border-slate-800 rounded-lg pl-10 pr-10 py-1.5 text-white text-sm focus:outline-none focus:border-red-500 transition-colors">
+                                    <button type="button" onclick="togglePasswordVisibility('signup-password-confirm', 'signup-eye-2')" class="absolute right-3 text-slate-500 hover:text-red-500 transition-colors cursor-pointer select-none">
+                                        <i id="signup-eye-2" data-lucide="eye" class="w-4 h-4"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div id="signup-error" class="hidden text-xs text-red-400 font-medium bg-red-950/30 border border-red-900/30 p-2.5 rounded-lg text-center"></div>
+                            <div id="signup-success" class="hidden text-xs text-emerald-400 font-medium bg-emerald-950/30 border border-emerald-900/30 p-2.5 rounded-lg text-center"></div>
+
+                            <button type="submit" class="w-full py-2.5 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-lg text-sm transition-all tracking-wide cursor-pointer border border-slate-700 active:scale-[0.98]">
+                                Zaregistrovat a vytvořit sklad
+                            </button>
+                        </form>
+                        <div class="text-center mt-3">
+                            <p class="text-xs text-slate-400">Už máš účet? <button onclick="switchAuthMode('login')" class="text-red-400 font-bold hover:underline cursor-pointer">Přihlásit se</button></p>
+                        </div>
+                    </div>
+
                 </div>
                 <div class="text-center text-[10px] text-slate-600 font-medium tracking-wide mt-6 border-t border-slate-850/60 pt-4">
                     &copy; 2026 EL3D SFS. Všechna práva vyhrazená.
@@ -76,7 +140,7 @@
                         <div class="bg-red-600 text-white font-black italic tracking-tighter px-2 py-0.5 rounded text-sm shadow-md shadow-red-600/20 transform -skew-x-12">
                             SFS
                         </div>
-                        <span class="hidden sm:inline text-[10px] text-slate-500 uppercase tracking-widest font-bold border-l border-slate-800 pl-2.5 mt-0.5">
+                        <span class="hidden md:inline text-[10px] text-slate-500 uppercase tracking-widest font-bold border-l border-slate-800 pl-3.5 ml-1 mt-0.5">
                             Smart Filament System
                         </span>
                     </div>
@@ -92,24 +156,15 @@
             <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                     <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 flex items-center justify-between shadow-sm">
-                        <div>
-                            <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Celkem cívek v regálu</p>
-                            <p class="text-2xl font-bold text-white mt-1" id="stat-total-spools">0</p>
-                        </div>
+                        <div><p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Celkem cívek v regálu</p><p class="text-2xl font-bold text-white mt-1" id="stat-total-spools">0</p></div>
                         <div class="p-3 bg-slate-800 rounded-lg text-slate-400"><i data-lucide="layers"></i></div>
                     </div>
                     <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 flex items-center justify-between shadow-sm">
-                        <div>
-                            <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Celková váha zásob</p>
-                            <p class="text-2xl font-bold text-white mt-1" id="stat-total-weight">0.0 kg</p>
-                        </div>
+                        <div><p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Celková váha zásob</p><p class="text-2xl font-bold text-white mt-1" id="stat-total-weight">0.0 kg</p></div>
                         <div class="p-3 bg-slate-800 rounded-lg text-slate-400"><i data-lucide="scale"></i></div>
                     </div>
                     <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 flex items-center justify-between shadow-sm">
-                        <div>
-                            <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Unikátních konfigurací</p>
-                            <p class="text-2xl font-bold text-red-400 mt-1" id="stat-unique-types">0</p>
-                        </div>
+                        <div><p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Unikátních konfigurací</p><p class="text-2xl font-bold text-red-400 mt-1" id="stat-unique-types">0</p></div>
                         <div class="p-3 bg-red-950/30 border border-red-900/50 rounded-lg text-red-400"><i data-lucide="tag"></i></div>
                     </div>
                 </section>
@@ -117,15 +172,10 @@
                 <section class="bg-slate-900 border border-slate-800 rounded-xl p-4 mb-8 shadow-sm flex flex-col sm:flex-row items-center gap-4 justify-between">
                     <div class="flex items-center gap-3 w-full sm:w-auto">
                         <div class="p-2 bg-red-600/10 border border-red-500/20 text-red-500 rounded-lg"><i data-lucide="gauge" class="w-4 h-4"></i></div>
-                        <div class="leading-none">
-                            <h4 class="text-sm font-bold text-white tracking-tight">Využití kapacity skladu</h4>
-                            <span class="text-[11px] text-slate-500 mt-1 inline-block">Celkový poměr čistého plastu vůči nákupnímu stavu</span>
-                        </div>
+                        <div class="leading-none"><h4 class="text-sm font-bold text-white">Využití kapacity skladu</h4><span class="text-[11px] text-slate-500 mt-1 inline-block">Celkový poměr čistého plastu vůči nákupnímu stavu</span></div>
                     </div>
                     <div class="w-full sm:flex-1 max-w-md flex items-center gap-3">
-                        <div class="w-full bg-slate-950 h-2 rounded-full border border-slate-900 overflow-hidden">
-                            <div id="global-storage-bar" class="h-full bg-red-600 transition-all duration-500" style="width: 0%"></div>
-                        </div>
+                        <div class="w-full bg-slate-950 h-2 rounded-full border border-slate-900 overflow-hidden"><div id="global-storage-bar" class="h-full bg-red-600 transition-all duration-500" style="width: 0%"></div></div>
                         <span id="global-storage-pct" class="text-xs font-mono font-bold text-slate-300">0%</span>
                     </div>
                 </section>
@@ -135,9 +185,9 @@
                     <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto items-stretch sm:items-center">
                         <div class="relative flex-1 sm:w-60" id="search-container">
                             <i data-lucide="search" class="absolute left-3 top-2.5 w-4 h-4 text-slate-500"></i>
-                            <input type="text" id="search-input" oninput="handleSearch(this.value)" placeholder="Hledat výrobce, barvu..." class="w-full bg-slate-900 border border-slate-800 rounded-lg pl-9 pr-3 py-1.5 text-white text-sm focus:outline-none focus:border-red-500 transition-colors">
+                            <input type="text" id="search-input" oninput="handleSearch(this.value)" placeholder="Hledat..." class="w-full bg-slate-900 border border-slate-800 rounded-lg pl-9 pr-3 py-1.5 text-white text-sm focus:outline-none focus:border-red-500">
                         </div>
-                        <button id="btn-add-main" onclick="openAddModal()" class="flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-500 text-white font-medium text-sm rounded-lg shadow-sm transition-all justify-center cursor-pointer shrink-0 active:scale-[0.98]">
+                        <button id="btn-add-main" onclick="openAddModal()" class="flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-500 text-white font-medium text-sm rounded-lg shadow-sm cursor-pointer shrink-0 active:scale-[0.98]">
                             <i data-lucide="plus" class="w-4 h-4"></i> Přidat cívku
                         </button>
                     </div>
@@ -146,55 +196,66 @@
                 <section id="spools-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 items-start"></section>
 
                 <section id="settings-panel" class="hidden max-w-2xl mx-auto bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-md animate-fadeIn">
-                    <div class="flex items-center gap-3 border-b border-slate-800 pb-4 mb-6">
-                        <i data-lucide="sliders" class="text-red-500 w-5 h-5"></i>
-                        <h3 class="text-lg font-bold text-white">Nastavení aplikace</h3>
-                    </div>
+                    <div class="flex items-center gap-3 border-b border-slate-800 pb-4 mb-6"><i data-lucide="sliders" class="text-red-500 w-5 h-5"></i><h3 class="text-lg font-bold text-white">Nastavení aplikace</h3></div>
                     <div class="space-y-6">
                         <div>
-                            <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-2"><i data-lucide="tag" class="w-3.5 h-3.5"></i> Správa podporovaných materiálů</h4>
+                            <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-2"><i data-lucide="tag" class="w-3.5 h-3.5"></i> Správa materiálů</h4>
                             <div class="bg-slate-950 p-4 rounded-lg border border-slate-850 space-y-4">
                                 <div class="flex gap-2">
-                                    <input type="text" id="new-material-input" placeholder="Např. ABS, ASA, TPU..." class="flex-1 bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-red-500 text-sm">
-                                    <button onclick="addNewMaterialType()" class="px-4 py-2 bg-red-600 hover:bg-red-500 text-white font-semibold rounded-lg text-sm transition-colors cursor-pointer">Přidat typ</button>
+                                    <input type="text" id="new-material-input" placeholder="ABS, ASA, TPU..." class="flex-1 bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-red-500 text-sm">
+                                    <button onclick="addNewMaterialType()" class="px-4 py-2 bg-red-600 hover:bg-red-500 text-white font-semibold rounded-lg text-sm cursor-pointer">Přidat</button>
                                 </div>
-                                <div class="pt-2">
-                                    <p class="text-xs text-slate-500 mb-2 font-medium uppercase tracking-wider">Aktuální typy v systému:</p>
-                                    <div id="materials-list-manager" class="flex flex-wrap gap-2"></div>
-                                </div>
+                                <div id="materials-list-manager" class="flex flex-wrap gap-2 pt-2"></div>
                             </div>
                         </div>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div class="bg-slate-950 p-4 rounded-lg border border-slate-850">
-                                <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2 flex items-center gap-2"><i data-lucide="bell" class="w-3.5 h-3.5"></i> Kritický limit cívky (g)</label>
+                                <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Kritický limit cívky (g)</label>
                                 <div class="flex gap-2">
                                     <input type="number" id="set-low-limit" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-1.5 text-white focus:outline-none focus:border-red-500 text-sm">
-                                    <button onclick="saveLimit()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-semibold transition-colors cursor-pointer">Uložit</button>
+                                    <button onclick="saveLimit()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-semibold cursor-pointer">Uložit</button>
                                 </div>
                             </div>
                             <div class="bg-slate-950 p-4 rounded-lg border border-slate-850">
-                                <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2 flex items-center gap-2"><i data-lucide="eye" class="w-3.5 h-3.5"></i> Režim karet při startu</label>
-                                <select id="set-expand-mode" onchange="saveExpandMode(this.value)" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-red-500">
-                                    <option value="collapsed">Zavřené (Kompaktní přehled)</option>
-                                    <option value="expanded">Rozbalené (Všechny spulky venku)</option>
+                                <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Režim karet při startu</label>
+                                <select id="set-expand-mode" onchange="saveExpandMode(this.value)" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-white text-sm">
+                                    <option value="collapsed">Zavřené (Kompaktní)</option>
+                                    <option value="expanded">Rozbalené (Vše venku)</option>
                                 </select>
                             </div>
                         </div>
+                        
                         <div>
-                            <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-2"><i data-lucide="shield-alert" class="w-3.5 h-3.5"></i> Zabezpečení brány (Změna hesla)</h4>
-                            <div class="bg-slate-950 p-4 rounded-lg border border-slate-850 flex flex-col sm:flex-row gap-3 items-end">
-                                <div class="flex-1 w-full">
-                                    <label class="block text-[10px] font-semibold text-slate-500 mb-1">Nové přístupové heslo</label>
-                                    <input type="password" id="set-new-password" placeholder="Zadej nové heslo" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-1.5 text-white text-sm focus:outline-none focus:border-red-500">
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2 flex items-center gap-2"><i data-lucide="shield-alert" class="w-3.5 h-3.5"></i> Zabezpečení (Změna hesla profilu)</label>
+                            <div class="bg-slate-950 p-4 rounded-lg border border-slate-850 space-y-4">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-[10px] font-semibold text-slate-500 mb-1 uppercase">Nové heslo</label>
+                                        <div class="relative flex items-center">
+                                            <input type="password" id="set-new-password" placeholder="Minimálně 3 znaky" class="w-full bg-slate-900 border border-slate-800 rounded-lg pl-3 pr-10 py-1.5 text-white text-sm focus:outline-none focus:border-red-500">
+                                            <button type="button" onclick="togglePasswordVisibility('set-new-password', 'settings-eye-1')" class="absolute right-3 text-slate-500 hover:text-red-400 transition-colors cursor-pointer select-none">
+                                                <i id="settings-eye-1" data-lucide="eye" class="w-4 h-4"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] font-semibold text-slate-500 mb-1 uppercase">Potvrdit nové heslo</label>
+                                        <div class="relative flex items-center">
+                                            <input type="password" id="set-new-password-confirm" placeholder="Zadej heslo znovu" class="w-full bg-slate-900 border border-slate-800 rounded-lg pl-3 pr-10 py-1.5 text-white text-sm focus:outline-none focus:border-red-500">
+                                            <button type="button" onclick="togglePasswordVisibility('set-new-password-confirm', 'settings-eye-2')" class="absolute right-3 text-slate-500 hover:text-red-400 transition-colors cursor-pointer select-none">
+                                                <i id="settings-eye-2" data-lucide="eye" class="w-4 h-4"></i>
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
-                                <button onclick="changeSystemPassword()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-lg text-xs font-bold transition-colors cursor-pointer w-full sm:w-auto h-9">Změnit heslo</button>
+                                <button onclick="changeSystemPassword()" class="w-full sm:w-auto px-5 py-2 bg-red-600 hover:bg-red-500 text-white rounded-lg text-xs font-bold cursor-pointer transition-colors shadow-md">Změnit a uložit heslo</button>
                             </div>
                         </div>
+
                         <div>
-                            <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-2"><i data-lucide="download-cloud" class="w-3.5 h-3.5"></i> Logistika dat (Zálohování regálu)</h4>
+                            <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-2"><i data-lucide="download-cloud" class="w-3.5 h-3.5"></i> Logistika dat (Zálohování)</h4>
                             <div class="bg-slate-950 p-4 rounded-lg border border-slate-850 flex flex-col sm:flex-row gap-3">
-                                <button onclick="exportWarehouseData()" class="flex-1 py-2 bg-slate-900 hover:bg-slate-850 border border-slate-800 text-xs font-semibold text-slate-200 rounded-lg flex items-center justify-center gap-2 transition-colors cursor-pointer"><i data-lucide="download" class="w-4 h-4"></i> Exportovat sklad do JSON</button>
-                                <label class="flex-1 py-2 bg-slate-900 hover:bg-slate-850 border border-slate-800 text-xs font-semibold text-slate-200 rounded-lg flex items-center justify-center gap-2 transition-colors cursor-pointer text-center"><i data-lucide="upload" class="w-4 h-4"></i> Importovat ze souboru<input type="file" id="import-file-input" class="hidden" accept=".json"></label>
+                                <button onclick="exportWarehouseData()" class="flex-1 py-2 bg-slate-900 hover:bg-slate-850 border border-slate-800 text-xs font-semibold text-slate-200 rounded-lg flex items-center justify-center gap-2 cursor-pointer"><i data-lucide="download" class="w-4 h-4"></i> Exportovat sklad do JSON</button>
                             </div>
                         </div>
                     </div>
@@ -204,46 +265,43 @@
     </div>
 
     <div id="spool-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-        <div class="bg-slate-900 border border-slate-800 rounded-xl max-w-lg w-full p-6 shadow-xl animate-fadeIn">
+        <div class="bg-slate-900 border border-slate-800 rounded-xl max-w-lg w-full p-6 shadow-xl">
             <div class="flex justify-between items-center mb-5">
                 <h3 id="modal-title" class="text-lg font-bold text-white">Nová cívka do skladu</h3>
                 <button onclick="closeModal()" class="text-slate-400 hover:text-white cursor-pointer"><i data-lucide="x"></i></button>
             </div>
             <form id="spool-form" onsubmit="handleFormSubmit(event)" class="space-y-4">
-                <input type="hidden" id="form-edit-id">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Výrobce</label>
-                        <input type="text" id="form-brand" list="brands-list" required placeholder="Např. Prusament" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-red-500 text-sm"><datalist id="brands-list"></datalist>
+                        <input type="text" id="form-brand" list="brands-list" required placeholder="Prusament" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white text-sm"><datalist id="brands-list"></datalist>
                     </div>
                     <div>
                         <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Typ materiálu</label>
-                        <select id="form-type" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-red-500 text-sm"></select>
+                        <select id="form-type" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white text-sm"></select>
                     </div>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Barva (Název)</label>
-                        <input type="text" id="form-color-name" list="colors-list" required placeholder="Např. Carbon Black" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-red-500 text-sm"><datalist id="colors-list"></datalist>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Barva</label>
+                        <input type="text" id="form-color-name" list="colors-list" required placeholder="Jet Black" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white text-sm"><datalist id="colors-list"></datalist>
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Zobrazení (HEX kód)</label>
-                        <input type="text" id="form-color-hex" value="#1e293b" required placeholder="#ffffff" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-red-500 text-sm font-mono">
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">HEX kód</label>
+                        <input type="text" id="form-color-hex" value="#1e293b" required class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white text-sm font-mono">
                     </div>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label id="label-weight-total" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Kapacita nové cívky (g)</label>
-                        <input type="number" id="form-weight" value="1000" required class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-red-500 text-sm">
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Kapacita (g)</label>
+                        <input type="number" id="form-weight" value="1000" required class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white text-sm">
                     </div>
-                    <div id="form-count-container">
-                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Počet kusů k přidání</label>
-                        <input type="number" id="form-count" value="1" min="1" required class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-red-500 text-sm">
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Počet kusů</label>
+                        <input type="number" id="form-count" value="1" min="1" required class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white text-sm">
                     </div>
                 </div>
-                <div class="pt-2">
-                    <button type="submit" id="btn-submit-form" class="w-full py-2.5 bg-red-600 hover:bg-red-500 text-white font-semibold rounded-lg transition-colors cursor-pointer text-sm shadow-md shadow-red-600/15">Uložit do skladu</button>
-                </div>
+                <button type="submit" class="w-full py-2.5 bg-red-600 hover:bg-red-500 text-white font-semibold rounded-lg text-sm shadow-md">Uložit do skladu</button>
             </form>
         </div>
     </div>
@@ -252,11 +310,12 @@
         <div class="max-w-7xl mx-auto px-4 flex justify-center items-center gap-2">
             &copy; 2026 EL3D SFS. Všechna práva vyhrazená. 
             <span class="text-slate-800">|</span> 
-            <span class="app-version-display font-mono text-slate-500"></span>
+            <span id="system-version-footer" class="text-[10px] font-mono text-slate-700 bg-slate-950/40 px-1.5 py-0.5 rounded border border-slate-900/40">v...</span>
+        </div>
         </div>
     </footer>
 
     <script src="app.js"></script>
-    
+
 </body>
 </html>
