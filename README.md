@@ -1,4 +1,4 @@
-# 🏎️ EL3D SFS — Smart Filament System
+#  EL3D SFS — Smart Filament System
 
 ![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
 ![Node.js](https://img.shields.io/badge/Node.js-Backend-43853D?logo=node.js&logoColor=white)
