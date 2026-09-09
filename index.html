@@ -95,7 +95,7 @@
                                 <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Zadat heslo</label>
                                 <div class="relative flex items-center">
                                     <i data-lucide="key-round" class="absolute left-3 top-2.5 w-4 h-4 text-slate-500"></i>
-                                    <input type="password" id="signup-password" required placeholder="Minimálně 3 znaky" class="w-full bg-slate-950 border border-slate-800 rounded-lg pl-10 pr-10 py-1.5 text-white text-sm focus:outline-none focus:border-red-500 transition-colors">
+                                    <input type="password" id="signup-password" required placeholder="Minimálně 10 znaků" class="w-full bg-slate-950 border border-slate-800 rounded-lg pl-10 pr-10 py-1.5 text-white text-sm focus:outline-none focus:border-red-500 transition-colors">
                                     <button type="button" onclick="togglePasswordVisibility('signup-password', 'signup-eye-1')" class="absolute right-3 text-slate-500 hover:text-red-500 transition-colors cursor-pointer select-none">
                                         <i id="signup-eye-1" data-lucide="eye" class="w-4 h-4"></i>
                                     </button>
@@ -146,6 +146,9 @@
                     </div>
                     <div class="flex items-center gap-4">
                         <span id="user-display-badge" class="text-xs font-mono bg-slate-950 border border-slate-800 px-2.5 py-1 rounded-md text-red-400 font-bold"></span>
+                        <button onclick="openScanner()" class="text-xs font-semibold text-slate-300 hover:text-white flex items-center gap-1.5 transition-colors cursor-pointer bg-slate-900/80 border border-slate-800 px-2.5 py-1.5 rounded-lg hover:bg-slate-800" title="Naskenovat QR kód cívky">
+                            <i data-lucide="scan-line" class="w-3.5 h-3.5"></i><span class="hidden sm:inline">Skenovat</span>
+                        </button>
                         <button onclick="handleLogout()" class="text-xs font-semibold text-slate-400 hover:text-red-400 flex items-center gap-1.5 transition-colors cursor-pointer bg-slate-900/80 border border-slate-800 px-2.5 py-1.5 rounded-lg hover:bg-slate-800">
                             <i data-lucide="log-out" class="w-3.5 h-3.5"></i> Odhlásit
                         </button>
@@ -226,13 +229,20 @@
                         </div>
                         
                         <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2 flex items-center gap-2"><i data-lucide="mail" class="w-3.5 h-3.5"></i> E-mail pro obnovu hesla</label>
+                            <div class="bg-slate-950 p-4 rounded-lg border border-slate-850 flex flex-col sm:flex-row gap-2">
+                                <input type="email" id="set-profile-email" placeholder="tvuj@email.cz" class="flex-1 bg-slate-900 border border-slate-800 rounded-lg px-3 py-1.5 text-white text-sm focus:outline-none focus:border-red-500">
+                                <button onclick="saveProfileEmail()" class="px-4 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-semibold cursor-pointer">Uložit e-mail</button>
+                            </div>
+                        </div>
+                        <div>
                             <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2 flex items-center gap-2"><i data-lucide="shield-alert" class="w-3.5 h-3.5"></i> Zabezpečení (Změna hesla profilu)</label>
                             <div class="bg-slate-950 p-4 rounded-lg border border-slate-850 space-y-4">
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div>
                                         <label class="block text-[10px] font-semibold text-slate-500 mb-1 uppercase">Nové heslo</label>
                                         <div class="relative flex items-center">
-                                            <input type="password" id="set-new-password" placeholder="Minimálně 3 znaky" class="w-full bg-slate-900 border border-slate-800 rounded-lg pl-3 pr-10 py-1.5 text-white text-sm focus:outline-none focus:border-red-500">
+                                            <input type="password" id="set-new-password" placeholder="Minimálně 10 znaků" class="w-full bg-slate-900 border border-slate-800 rounded-lg pl-3 pr-10 py-1.5 text-white text-sm focus:outline-none focus:border-red-500">
                                             <button type="button" onclick="togglePasswordVisibility('set-new-password', 'settings-eye-1')" class="absolute right-3 text-slate-500 hover:text-red-400 transition-colors cursor-pointer select-none">
                                                 <i id="settings-eye-1" data-lucide="eye" class="w-4 h-4"></i>
                                             </button>
@@ -257,6 +267,10 @@
                             <div class="bg-slate-950 p-4 rounded-lg border border-slate-850 flex flex-col sm:flex-row gap-3">
                                 <button onclick="exportWarehouseData()" class="flex-1 py-2 bg-slate-900 hover:bg-slate-850 border border-slate-800 text-xs font-semibold text-slate-200 rounded-lg flex items-center justify-center gap-2 cursor-pointer"><i data-lucide="download" class="w-4 h-4"></i> Exportovat sklad do JSON</button>
                             </div>
+                        </div>
+                        <div>
+                            <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-2"><i data-lucide="history" class="w-3.5 h-3.5"></i> Poslední pohyby skladu</h4>
+                            <div id="inventory-events" class="bg-slate-950 rounded-lg border border-slate-850 divide-y divide-slate-850 text-xs text-slate-400"></div>
                         </div>
                     </div>
                 </section>
@@ -303,6 +317,26 @@
                 </div>
                 <button type="submit" class="w-full py-2.5 bg-red-600 hover:bg-red-500 text-white font-semibold rounded-lg text-sm shadow-md">Uložit do skladu</button>
             </form>
+        </div>
+    </div>
+
+    <div id="qr-modal" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-[60]">
+        <div id="qr-label" class="bg-white text-slate-950 rounded-xl max-w-xs w-full p-6 shadow-xl text-center">
+            <div class="flex justify-between items-center mb-3 no-print"><h3 class="font-bold">QR štítek cívky</h3><button onclick="closeQrModal()" class="text-slate-500 hover:text-slate-950"><i data-lucide="x"></i></button></div>
+            <p id="qr-label-name" class="font-bold text-lg leading-tight"></p>
+            <p id="qr-label-meta" class="text-sm text-slate-600 mt-1 mb-4"></p>
+            <img id="qr-image" class="w-52 h-52 mx-auto image-rendering-auto" alt="QR kód cívky">
+            <p id="qr-payload" class="font-mono text-xs mt-3 text-slate-600"></p>
+            <button onclick="window.print()" class="no-print mt-5 w-full py-2 bg-slate-900 text-white rounded-lg text-sm font-bold">Vytisknout štítek</button>
+        </div>
+    </div>
+
+    <div id="scanner-modal" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-[60]">
+        <div class="bg-slate-900 border border-slate-700 rounded-xl max-w-md w-full p-5 shadow-xl">
+            <div class="flex justify-between items-center mb-4"><h3 class="font-bold text-white flex items-center gap-2"><i data-lucide="scan-line" class="w-5 h-5 text-red-400"></i>Skenovat cívku</h3><button onclick="closeScanner()" class="text-slate-400 hover:text-white"><i data-lucide="x"></i></button></div>
+            <video id="scanner-video" autoplay playsinline class="w-full aspect-square object-cover rounded-lg bg-slate-950"></video>
+            <p id="scanner-status" class="text-xs text-slate-400 mt-3 text-center">Povol fotoaparát a namiř na QR štítek.</p>
+            <form onsubmit="submitManualQr(event)" class="flex gap-2 mt-4"><input id="manual-qr-input" class="min-w-0 flex-1 bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-white" placeholder="EL3D-SFS:123"><button class="px-3 py-2 bg-slate-800 rounded-lg text-sm font-semibold">Otevřít</button></form>
         </div>
     </div>
 

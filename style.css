@@ -14,3 +14,10 @@
 .animate-fadeIn { animation: fadeIn 0.2s ease-out forwards; }
 .animate-slideInRight { animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
 .animate-pulse-urgent { animation: pulse-urgent 1.5s infinite ease-in-out; }
+
+@media print {
+    body > *:not(#qr-modal) { display: none !important; }
+    #qr-modal { position: static !important; display: block !important; background: white !important; }
+    #qr-label { box-shadow: none !important; margin: 0 auto; }
+    .no-print { display: none !important; }
+}
