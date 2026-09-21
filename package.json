@@ -2,10 +2,14 @@
   "name": "el3d-sfs",
   "version": "1.0.1",
   "description": "",
-  "main": "app.js",
+  "main": "server/index.js",
   "scripts": {
-    "test": "node --check server.js && node --check app.js && node --check mailer.js",
-    "start": "node server.js"
+    "test": "node --check server/index.js && node --check server/schema.js && node --check server/db.js && node --check server/session.js && node --check server/rateLimit.js && node --check server/audit.js && node --check server/env.js && node --check server/mailer.js && node --check server/utils/validators.js && node --check server/utils/password.js && node --check server/routes/auth.js && node --check server/routes/spools.js && node --check server/routes/events.js && node --check server/routes/config.js && node --check server/routes/misc.js",
+    "start": "node server/index.js",
+    "pm2:start": "pm2 start ecosystem.config.js",
+    "pm2:stop": "pm2 stop el3d-sfs",
+    "pm2:restart": "pm2 restart el3d-sfs",
+    "pm2:logs": "pm2 logs el3d-sfs"
   },
   "keywords": [],
   "author": "",

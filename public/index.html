@@ -336,7 +336,7 @@
             <div class="flex justify-between items-center mb-4"><h3 class="font-bold text-white flex items-center gap-2"><i data-lucide="scan-line" class="w-5 h-5 text-red-400"></i>Skenovat cívku</h3><button onclick="closeScanner()" class="text-slate-400 hover:text-white"><i data-lucide="x"></i></button></div>
             <video id="scanner-video" autoplay playsinline class="w-full aspect-square object-cover rounded-lg bg-slate-950"></video>
             <p id="scanner-status" class="text-xs text-slate-400 mt-3 text-center">Povol fotoaparát a namiř na QR štítek.</p>
-            <form onsubmit="submitManualQr(event)" class="flex gap-2 mt-4"><input id="manual-qr-input" class="min-w-0 flex-1 bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-white" placeholder="EL3D-SFS:123"><button class="px-3 py-2 bg-slate-800 rounded-lg text-sm font-semibold">Otevřít</button></form>
+            <form onsubmit="submitManualQr(event)" class="flex gap-2 mt-4"><input id="manual-qr-input" class="min-w-0 flex-1 bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-white" placeholder="Vlož odkaz nebo ID cívky"><button class="px-3 py-2 bg-slate-800 rounded-lg text-sm font-semibold">Otevřít</button></form>
         </div>
     </div>
 
@@ -349,7 +349,13 @@
         </div>
     </footer>
 
-    <script src="app.js"></script>
+    <script src="js/state.js"></script>
+    <script src="js/particles.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/inventory.js"></script>
+    <script src="js/qr-scanner.js"></script>
+    <script src="js/settings.js"></script>
+    <script src="js/bootstrap.js"></script>
 
 </body>
 </html>
