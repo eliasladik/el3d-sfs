@@ -1,6 +1,6 @@
 {
   "name": "el3d-sfs",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "",
   "main": "server/index.js",
   "scripts": {

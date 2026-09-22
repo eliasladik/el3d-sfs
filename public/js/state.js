@@ -14,3 +14,4 @@ let particleAnimationId = null;
 let scannerStream = null;
 let scannerAnimationId = null;
 let pendingSpoolId = null; // ID cívky z QR odkazu (?spool=), na kterou se má skočit po načtení skladu
+let lowStockOnly = false; // přepínač filtru "jen nízký stav"

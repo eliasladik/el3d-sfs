@@ -69,7 +69,7 @@ function extractSpoolId(raw) {
 function focusSpoolById(id) {
     const spool = mockSpools.find(item => item.id === id);
     if (!spool) return false;
-    currentFilter = 'ALL'; searchQuery = '';
+    currentFilter = 'ALL'; searchQuery = ''; lowStockOnly = false;
     const searchInput = document.getElementById('search-input'); if (searchInput) searchInput.value = '';
     updateFilterButtonStyles();
     const key = `${spool.brand}-${spool.material_type}-${spool.color_name}`.toLowerCase();
