@@ -2,6 +2,7 @@
 
 window.addEventListener('DOMContentLoaded', () => {
     loadSystemVersion();
+    updateThemeToggleIcon();
 
     // Pokud stránku otevřel odkaz z naskenovaného QR štítku (?spool=ID),
     // zapamatujeme si ID a odkaz z adresního řádku hned vyčistíme.
@@ -23,7 +24,9 @@ window.addEventListener('DOMContentLoaded', () => {
         }).then(data => {
             currentUser = data.username;
             currentEmail = data.email;
+            currentRole = data.role || 'admin';
             materialTypes = data.config.materialTypes; lowStockLimit = data.config.lowStockLimit; defaultExpandMode = data.config.defaultExpandMode;
+            applyRoleUI();
             return loadDataFromServer();
         }).then(() => {
             if (pendingSpoolId !== null) { focusSpoolById(pendingSpoolId); pendingSpoolId = null; }

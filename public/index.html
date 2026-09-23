@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EL3D SFS — Smart Filament System</title>
+    <script>(function(){try{if(localStorage.getItem('sfs_theme')==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();</script>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link rel="stylesheet" href="style.css">
@@ -146,6 +147,12 @@
                     </div>
                     <div class="flex items-center gap-4">
                         <span id="user-display-badge" class="text-xs font-mono bg-slate-950 border border-slate-800 px-2.5 py-1 rounded-md text-red-400 font-bold"></span>
+                        <button onclick="toggleTheme()" class="text-slate-400 hover:text-white transition-colors cursor-pointer bg-slate-900/80 border border-slate-800 p-1.5 rounded-lg hover:bg-slate-800" title="Přepnout světlý/tmavý režim">
+                            <i id="theme-toggle-icon" data-lucide="sun" class="w-4 h-4"></i>
+                        </button>
+                        <button onclick="toggleShortcutsHelp()" class="hidden sm:flex text-slate-400 hover:text-white transition-colors cursor-pointer bg-slate-900/80 border border-slate-800 p-1.5 rounded-lg hover:bg-slate-800" title="Klávesové zkratky (?)">
+                            <i data-lucide="keyboard" class="w-4 h-4"></i>
+                        </button>
                         <button onclick="openScanner()" class="text-xs font-semibold text-slate-300 hover:text-white flex items-center gap-1.5 transition-colors cursor-pointer bg-slate-900/80 border border-slate-800 px-2.5 py-1.5 rounded-lg hover:bg-slate-800" title="Naskenovat QR kód cívky">
                             <i data-lucide="scan-line" class="w-3.5 h-3.5"></i><span class="hidden sm:inline">Skenovat</span>
                         </button>
@@ -201,7 +208,7 @@
                 <section id="settings-panel" class="hidden max-w-2xl mx-auto bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-md animate-fadeIn">
                     <div class="flex items-center gap-3 border-b border-slate-800 pb-4 mb-6"><i data-lucide="sliders" class="text-red-500 w-5 h-5"></i><h3 class="text-lg font-bold text-white">Nastavení aplikace</h3></div>
                     <div class="space-y-6">
-                        <div>
+                        <div class="admin-only">
                             <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-2"><i data-lucide="tag" class="w-3.5 h-3.5"></i> Správa materiálů</h4>
                             <div class="bg-slate-950 p-4 rounded-lg border border-slate-850 space-y-4">
                                 <div class="flex gap-2">
@@ -211,7 +218,7 @@
                                 <div id="materials-list-manager" class="flex flex-wrap gap-2 pt-2"></div>
                             </div>
                         </div>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 admin-only">
                             <div class="bg-slate-950 p-4 rounded-lg border border-slate-850">
                                 <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Kritický limit cívky (g)</label>
                                 <div class="flex gap-2">
@@ -259,6 +266,27 @@
                                     </div>
                                 </div>
                                 <button onclick="changeSystemPassword()" class="w-full sm:w-auto px-5 py-2 bg-red-600 hover:bg-red-500 text-white rounded-lg text-xs font-bold cursor-pointer transition-colors shadow-md">Změnit a uložit heslo</button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-2"><i data-lucide="users" class="w-3.5 h-3.5"></i> Tým (sdílený sklad)</h4>
+                            <div class="bg-slate-950 p-4 rounded-lg border border-slate-850 space-y-4">
+                                <div id="team-members-list" class="space-y-2">Načítám tým…</div>
+                                <form onsubmit="inviteMember(event)" class="admin-only pt-3 border-t border-slate-850 space-y-2">
+                                    <p class="text-[10px] font-bold uppercase tracking-wider text-slate-500">Pozvat nového člena</p>
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                        <input type="text" id="invite-username" required placeholder="uživatelské jméno" class="bg-slate-900 border border-slate-800 rounded-lg px-3 py-1.5 text-white text-sm focus:outline-none focus:border-red-500">
+                                        <input type="email" id="invite-email" required placeholder="e-mail" class="bg-slate-900 border border-slate-800 rounded-lg px-3 py-1.5 text-white text-sm focus:outline-none focus:border-red-500">
+                                        <input type="password" id="invite-password" required placeholder="heslo (min. 10 znaků)" class="bg-slate-900 border border-slate-800 rounded-lg px-3 py-1.5 text-white text-sm focus:outline-none focus:border-red-500">
+                                        <select id="invite-role" class="bg-slate-900 border border-slate-800 rounded-lg px-3 py-1.5 text-white text-sm">
+                                            <option value="member">Člen (bez mazaní a nastavení)</option>
+                                            <option value="admin">Admin (plná práva)</option>
+                                        </select>
+                                    </div>
+                                    <div id="invite-error" class="hidden text-xs text-red-400 font-medium bg-red-950/30 border border-red-900/30 p-2 rounded-lg"></div>
+                                    <button type="submit" class="w-full sm:w-auto px-4 py-1.5 bg-red-600 hover:bg-red-500 text-white rounded-lg text-xs font-bold cursor-pointer">Pozvat do týmu</button>
+                                </form>
                             </div>
                         </div>
 
@@ -353,6 +381,18 @@
         </div>
     </div>
 
+    <div id="shortcuts-modal" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-[60]">
+        <div class="bg-slate-900 border border-slate-700 rounded-xl max-w-sm w-full p-5 shadow-xl">
+            <div class="flex justify-between items-center mb-4"><h3 class="font-bold text-white flex items-center gap-2"><i data-lucide="keyboard" class="w-5 h-5 text-red-400"></i>Klávesové zkratky</h3><button onclick="toggleShortcutsHelp()" class="text-slate-400 hover:text-white"><i data-lucide="x"></i></button></div>
+            <div class="space-y-2.5 text-sm">
+                <div class="flex items-center justify-between"><span class="text-slate-300">Hledat v regálu</span><kbd class="px-2 py-0.5 bg-slate-950 border border-slate-800 rounded text-xs font-mono text-slate-400">/</kbd></div>
+                <div class="flex items-center justify-between"><span class="text-slate-300">Přidat novou cívku</span><kbd class="px-2 py-0.5 bg-slate-950 border border-slate-800 rounded text-xs font-mono text-slate-400">N</kbd></div>
+                <div class="flex items-center justify-between"><span class="text-slate-300">Zavřít otevřené okno</span><kbd class="px-2 py-0.5 bg-slate-950 border border-slate-800 rounded text-xs font-mono text-slate-400">Esc</kbd></div>
+                <div class="flex items-center justify-between"><span class="text-slate-300">Tato nápověda</span><kbd class="px-2 py-0.5 bg-slate-950 border border-slate-800 rounded text-xs font-mono text-slate-400">?</kbd></div>
+            </div>
+        </div>
+    </div>
+
     <footer class="w-full border-t border-slate-900 bg-slate-900/40 py-4 mt-12 text-center text-xs text-slate-600 font-medium tracking-wide backdrop-blur-sm">
         <div class="max-w-7xl mx-auto px-4 flex justify-center items-center gap-2">
             &copy; 2026 EL3D SFS. Všechna práva vyhrazená. 
@@ -368,6 +408,10 @@
     <script src="js/inventory.js"></script>
     <script src="js/qr-scanner.js"></script>
     <script src="js/settings.js"></script>
+    <script src="js/team.js"></script>
+    <script src="js/reservation.js"></script>
+    <script src="js/theme.js"></script>
+    <script src="js/keyboard.js"></script>
     <script src="js/bootstrap.js"></script>
 
 </body>

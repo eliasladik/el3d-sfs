@@ -13,13 +13,17 @@ Systém je navržen s důrazem na čistý "dark motorsport" design, bleskovou od
 
 ## ✨ Hlavní funkce
 
-- 🔐 **Zabezpečené účty:** Hesla jsou hashovaná, API používá serverovou session a každý účet vidí pouze svůj regál.
+- 🔐 **Zabezpečené účty:** Hesla jsou hashovaná, API používá serverovou session.
+- 👥 **Role a sdílený sklad (týmy):** Administrátor může pozvat další členy ("tiskaře") do sdíleného skladu. Členové vidí a odepisují ze stejných cívek jako admin, ale nemohou mazat cívky, měnit materiály/limity ani spravovat tým - to zůstává jen administrátorovi.
+- 🔒 **Rezervace cívky pro tisk:** Kdokoliv z týmu může cívku označit jako "právě používanou" (s volitelnou poznámkou), aby si dva lidé nesáhli na stejný kus. Rezervaci uvolní ten, kdo ji vytvořil, nebo admin.
 - 🗄️ **Lokální SQLite Databáze:** Rychlé a spolehlivé ukládání dat do jednoho souboru (`database.sqlite`), žádné složité nastavování SQL serverů.
-- 📊 **Telemetrie Skladu:** Výpočet kapacity regálu, celkové váhy a vizuální progress-bary pro každou cívku.
-- 🎨 **Dark UI:** Moderní uživatelské rozhraní postavené na Tailwind CSS s podporou dynamických notifikací a částicových animací.
+- 📊 **Telemetrie Skladu:** Výpočet kapacity regálu, celkové váhy, vizuální progress-bary a přehled spotřeby materiálu za zvolené období.
+- 🎨 **Tmavý i světlý režim:** Přepínatelné jedním klikem, volba se pamatuje.
+- ⌨️ **Klávesové zkratky:** `/` hledání, `N` nová cívka, `Esc` zavření okna, `?` nápověda.
 - 📱 **Mobile Ready:** Plně responzivní design optimalizovaný pro ovládání z mobilního telefonu přímo u 3D tiskárny.
+- 📷 **QR štítky:** Každý kus cívky má QR štítek s přímým odkazem - naskenování běžným fotoaparátem otevře appku rovnou na dané cívce a zvýrazní ji.
 - ⚙️ **Dynamická konfigurace:** Správa vlastních materiálů (PLA, PETG, PCCF, NYLON...), hlídání kritického stavu (Low Stock Limit) a bezpečné odhlašování.
-- 🧾 **Auditní historie:** Každé přidání, odpis, korekce a smazání cívky se zaznamená do historie skladu.
+- 🧾 **Auditní historie:** Každé přidání, odpis, korekce, rezervace a smazání cívky se zaznamená do historie skladu i s tím, kdo pohyb provedl.
 
 ---
 
@@ -77,11 +81,11 @@ el3d-sfs/
 │   ├── env.js               # Načtení .env souboru
 │   ├── mailer.js            # Odeslání e-mailu při obnově hesla (SMTP)
 │   ├── utils/               # Validace a hashování hesel
-│   └── routes/              # REST API endpointy (auth, spools, events, config, misc)
+│   └── routes/              # REST API endpointy (auth, spools, events, config, team, misc)
 ├── public/                  # Frontend (staté soubory servirované Expressem)
 │   ├── index.html
 │   ├── style.css
-│   └── js/                  # app.js rozdělený na logické moduly (state, auth, inventory, ...)
+│   └── js/                  # app.js rozdělený na logické moduly (state, auth, inventory, team, reservation, theme, keyboard, ...)
 ├── database/                # SQLite soubor (mimo Git, generuje se automaticky)
 ├── ecosystem.config.js      # Konfigurace pro PM2 (produkční běh na Raspberry Pi)
 └── package.json
@@ -215,8 +219,12 @@ Pro ovládání systému z mobilu během práce u tiskárny:
 ## 🗺️ Plánovaný rozvoj (Roadmap)
 - [x] Nasazení na produkční prostředí přes Raspberry Pi a PM2.
 - [x] Generování a skenování QR kódů pro rychlé dohledání cívky.
-- [ ] Inteligentní parsing G-code / 3MF pro automatické odepisování přesné váhy ze Sliceru.
 - [x] Historie odpisů a tiskový "Audit Log".
+- [x] Role a sdílený sklad pro tým (admin/člen).
+- [x] Rezervace cívky pro právě probíhající tisk.
+- [x] Tmavý/světlý režim a klávesové zkratky.
+- [ ] Inteligentní parsing G-code / 3MF pro automatické odepisování přesné váhy ze Sliceru.
+- [ ] Cena materiálu a přehled nákladů na tisk.
 
 ---
 

@@ -15,6 +15,51 @@
 .animate-slideInRight { animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
 .animate-pulse-urgent { animation: pulse-urgent 1.5s infinite ease-in-out; }
 
+/* Role "člen" nevidí prvky vyhrazené administrátorovi týmu (skutečné vynucení
+   je na backendu - tohle je jen UI vrstva). */
+body.role-member .admin-only { display: none !important; }
+
+/* Světlý režim - appka používá natvrdo napsané tmavé Tailwind třídy (bez
+   dark:/light: variant, protože běží přes Tailwind CDN bez build kroku), takže
+   světlý režim přebíjí konkrétní použité třídy přímo. Semantické barvy pro
+   varování (červená/jantarová s průhledností) se nepřebíjejí - zůstávají jako
+   jemný tinted podklad, který funguje na obou pozadích. */
+html[data-theme="light"] { color-scheme: light; }
+
+html[data-theme="light"] .bg-slate-950,
+html[data-theme="light"] .bg-slate-950\/40,
+html[data-theme="light"] .bg-slate-950\/60 { background-color: #f1f5f9 !important; }
+
+html[data-theme="light"] .bg-slate-900,
+html[data-theme="light"] .bg-slate-900\/20,
+html[data-theme="light"] .bg-slate-900\/40,
+html[data-theme="light"] .bg-slate-900\/50,
+html[data-theme="light"] .bg-slate-900\/80,
+html[data-theme="light"] .bg-slate-900\/90 { background-color: #ffffff !important; }
+
+html[data-theme="light"] .bg-slate-850 { background-color: #f1f5f9 !important; }
+html[data-theme="light"] .bg-slate-800 { background-color: #e2e8f0 !important; }
+html[data-theme="light"] .bg-slate-700 { background-color: #cbd5e1 !important; }
+
+html[data-theme="light"] .hover\:bg-slate-700:hover { background-color: #94a3b8 !important; }
+html[data-theme="light"] .hover\:bg-slate-800:hover { background-color: #cbd5e1 !important; }
+html[data-theme="light"] .hover\:bg-slate-850:hover { background-color: #e2e8f0 !important; }
+
+html[data-theme="light"] .border-slate-700,
+html[data-theme="light"] .border-slate-800,
+html[data-theme="light"] .border-slate-850,
+html[data-theme="light"] .border-slate-850\/60,
+html[data-theme="light"] .border-slate-900,
+html[data-theme="light"] .border-slate-900\/40 { border-color: #e2e8f0 !important; }
+
+html[data-theme="light"] .text-white,
+html[data-theme="light"] .text-slate-100,
+html[data-theme="light"] .text-slate-200 { color: #0f172a !important; }
+html[data-theme="light"] .text-slate-300 { color: #334155 !important; }
+html[data-theme="light"] .text-slate-400 { color: #64748b !important; }
+
+html[data-theme="light"] #login-particles { opacity: 0.25; }
+
 @media print {
     body > *:not(#qr-modal) { display: none !important; }
     #qr-modal { position: static !important; display: block !important; background: white !important; }

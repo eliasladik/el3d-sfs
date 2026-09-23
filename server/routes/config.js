@@ -1,11 +1,13 @@
 const express = require('express');
 const { run } = require('../db');
-const { requireAuth } = require('../session');
+const { requireAuth, requireAdmin } = require('../session');
 const { validWeight } = require('../utils/validators');
 
 const router = express.Router();
 
-router.post('/update', requireAuth, async (req, res, next) => {
+// Materiály, limit nízkého stavu a výchozí zobrazení jsou nastavení celého sdíleného
+// skladu (týmu), proto je může měnit jen admin.
+router.post('/update', requireAuth, requireAdmin, async (req, res, next) => {
     try {
         const config = req.body.config || {};
         const materialTypes = Array.isArray(config.materialTypes)
@@ -16,7 +18,7 @@ router.post('/update', requireAuth, async (req, res, next) => {
             lowStockLimit: validWeight(config.lowStockLimit) ? config.lowStockLimit : 150,
             defaultExpandMode: config.defaultExpandMode === 'expanded' ? 'expanded' : 'collapsed'
         };
-        await run('UPDATE config SET value = ? WHERE username = ?', [JSON.stringify(saved), req.user]);
+        await run('UPDATE config SET value = ? WHERE username = ?', [JSON.stringify(saved), req.workspaceOwner]);
         res.json(saved);
     } catch (err) { next(err); }
 });

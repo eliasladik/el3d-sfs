@@ -18,7 +18,7 @@ router.post('/signup', limit(5, 15 * 60 * 1000), async (req, res, next) => {
         await run('INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)', [username, email, await hashPassword(password)]);
         await run('INSERT INTO config (username, value) VALUES (?, ?)', [username, JSON.stringify(publicConfig('{}'))]);
         setSession(res, username, true);
-        res.status(201).json({ success: true, config: publicConfig('{}') });
+        res.status(201).json({ success: true, role: 'admin', config: publicConfig('{}') });
     } catch (err) {
         if (String(err.message).includes('UNIQUE')) return res.status(400).json({ message: 'Toto jméno nebo e-mail už existuje.' });
         next(err);
@@ -28,11 +28,12 @@ router.post('/signup', limit(5, 15 * 60 * 1000), async (req, res, next) => {
 router.post('/auth', limit(10, 15 * 60 * 1000), async (req, res, next) => {
     try {
         const username = normalizeUsername(req.body.username);
-        const user = await get('SELECT username, email, password_hash FROM users WHERE username = ?', [username]);
+        const user = await get('SELECT username, email, password_hash, role, owner_username FROM users WHERE username = ?', [username]);
         if (!user || !await verifyPassword(req.body.password || '', user.password_hash)) return res.status(401).json({ message: 'Nesprávné uživatelské jméno nebo heslo.' });
-        const config = await get('SELECT value FROM config WHERE username = ?', [username]);
+        const workspaceOwner = user.owner_username || username;
+        const config = await get('SELECT value FROM config WHERE username = ?', [workspaceOwner]);
         setSession(res, username, Boolean(req.body.remember));
-        res.json({ success: true, email: user.email, config: publicConfig(config && config.value) });
+        res.json({ success: true, email: user.email, role: user.role || 'admin', config: publicConfig(config && config.value) });
     } catch (err) { next(err); }
 });
 
@@ -40,9 +41,9 @@ router.post('/logout', (req, res) => { clearSession(req, res); res.sendStatus(20
 
 router.get('/session', requireAuth, async (req, res, next) => {
     try {
-        const config = await get('SELECT value FROM config WHERE username = ?', [req.user]);
+        const config = await get('SELECT value FROM config WHERE username = ?', [req.workspaceOwner]);
         const user = await get('SELECT email FROM users WHERE username = ?', [req.user]);
-        res.json({ username: req.user, email: user.email, config: publicConfig(config && config.value) });
+        res.json({ username: req.user, email: user.email, role: req.role, config: publicConfig(config && config.value) });
     } catch (err) { next(err); }
 });
 

@@ -1,6 +1,6 @@
 // Panel nastavení: materiály, limity, profil, export, historie
 
-function showSettings() { currentFilter = 'SETTINGS'; updateFilterButtonStyles(); document.getElementById('spools-grid').classList.add('hidden'); document.getElementById('btn-add-main').classList.add('hidden'); document.getElementById('search-container').classList.add('hidden'); document.getElementById('settings-panel').classList.remove('hidden'); document.getElementById('set-profile-email').value = currentEmail.endsWith('@legacy.local') ? '' : currentEmail; renderMaterialsManagerList(); loadInventoryEvents(); loadConsumptionStats(30); }
+function showSettings() { currentFilter = 'SETTINGS'; updateFilterButtonStyles(); document.getElementById('spools-grid').classList.add('hidden'); document.getElementById('btn-add-main').classList.add('hidden'); document.getElementById('search-container').classList.add('hidden'); document.getElementById('settings-panel').classList.remove('hidden'); document.getElementById('set-profile-email').value = currentEmail.endsWith('@legacy.local') ? '' : currentEmail; renderMaterialsManagerList(); loadInventoryEvents(); loadConsumptionStats(30); loadTeam(); }
 async function saveProfileEmail() {
     const email = document.getElementById('set-profile-email').value.trim();
     const response = await fetch(`${API_URL}/profile/email`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email }) });

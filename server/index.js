@@ -23,6 +23,7 @@ app.use('/api', require('./routes/auth'));
 app.use('/api/spools', require('./routes/spools'));
 app.use('/api/events', require('./routes/events'));
 app.use('/api/config', require('./routes/config'));
+app.use('/api/team', require('./routes/team'));
 
 // Servíruje pouze obsah public/ (frontend) - zdrojový kód backendu ani databáze
 // tak už nejsou přístupné přes HTTP, na rozdíl od původní verze serverující __dirname.

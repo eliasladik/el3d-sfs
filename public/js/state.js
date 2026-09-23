@@ -15,3 +15,5 @@ let scannerStream = null;
 let scannerAnimationId = null;
 let pendingSpoolId = null; // ID cívky z QR odkazu (?spool=), na kterou se má skočit po načtení skladu
 let lowStockOnly = false; // přepínač filtru "jen nízký stav"
+let currentRole = 'admin'; // role přihlášeného uživatele v rámci sdíleného skladu ('admin' | 'member')
+let teamMembers = []; // seznam členů týmu (načteno v Nastavení)

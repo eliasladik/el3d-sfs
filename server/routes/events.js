@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.get('/', requireAuth, async (req, res, next) => {
     try {
-        res.json(await all('SELECT id, spool_id, action, weight_delta_g, note, created_at FROM inventory_events WHERE owner = ? ORDER BY id DESC LIMIT 50', [req.user]));
+        res.json(await all('SELECT id, spool_id, action, weight_delta_g, note, actor, created_at FROM inventory_events WHERE owner = ? ORDER BY id DESC LIMIT 50', [req.workspaceOwner]));
     } catch (err) { next(err); }
 });
 
@@ -24,7 +24,7 @@ router.get('/stats', requireAuth, async (req, res, next) => {
              GROUP BY material
              HAVING consumed_g > 0
              ORDER BY consumed_g DESC`,
-            [req.user, `-${days} days`]
+            [req.workspaceOwner, `-${days} days`]
         );
         const totalConsumed = byMaterial.reduce((sum, row) => sum + row.consumed_g, 0);
         res.json({ days, totalConsumed, byMaterial });
