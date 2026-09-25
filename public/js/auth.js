@@ -121,7 +121,7 @@ async function handleLogin(e) {
             currentEmail = data.email;
             currentRole = data.role || 'admin';
             localStorage.setItem('sfs_session_active', 'true');
-            materialTypes = data.config.materialTypes; lowStockLimit = data.config.lowStockLimit; defaultExpandMode = data.config.defaultExpandMode;
+            materialTypes = data.config.materialTypes; lowStockLimit = data.config.lowStockLimit; defaultExpandMode = data.config.defaultExpandMode; printers = data.config.printers || [];
             applyRoleUI();
             stopParticleAnimation(); document.getElementById('login-page').classList.add('opacity-0');
             setTimeout(() => { document.getElementById('login-page').classList.add('hidden'); document.getElementById('app-content').classList.remove('hidden', 'opacity-0'); loadDataFromServer().then(() => { if (pendingSpoolId !== null) { focusSpoolById(pendingSpoolId); pendingSpoolId = null; } }); }, 300);

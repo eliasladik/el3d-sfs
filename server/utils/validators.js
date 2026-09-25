@@ -9,7 +9,8 @@ function publicConfig(value) {
     return {
         materialTypes: Array.isArray(config.materialTypes) ? config.materialTypes : ['PLA', 'PETG', 'PCCF', 'NYLON'],
         lowStockLimit: Number.isInteger(config.lowStockLimit) ? config.lowStockLimit : 150,
-        defaultExpandMode: config.defaultExpandMode === 'expanded' ? 'expanded' : 'collapsed'
+        defaultExpandMode: config.defaultExpandMode === 'expanded' ? 'expanded' : 'collapsed',
+        printers: Array.isArray(config.printers) ? config.printers : []
     };
 }
 

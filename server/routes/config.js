@@ -13,10 +13,14 @@ router.post('/update', requireAuth, requireAdmin, async (req, res, next) => {
         const materialTypes = Array.isArray(config.materialTypes)
             ? [...new Set(config.materialTypes.map(value => String(value).trim().toUpperCase()).filter(value => /^[A-Z0-9 +.-]{1,32}$/.test(value)))].slice(0, 20)
             : [];
+        const printers = Array.isArray(config.printers)
+            ? [...new Set(config.printers.map(value => String(value).trim()).filter(value => value.length > 0 && value.length <= 40))].slice(0, 30)
+            : [];
         const saved = {
             materialTypes: materialTypes.length ? materialTypes : ['PLA'],
             lowStockLimit: validWeight(config.lowStockLimit) ? config.lowStockLimit : 150,
-            defaultExpandMode: config.defaultExpandMode === 'expanded' ? 'expanded' : 'collapsed'
+            defaultExpandMode: config.defaultExpandMode === 'expanded' ? 'expanded' : 'collapsed',
+            printers
         };
         await run('UPDATE config SET value = ? WHERE username = ?', [JSON.stringify(saved), req.workspaceOwner]);
         res.json(saved);

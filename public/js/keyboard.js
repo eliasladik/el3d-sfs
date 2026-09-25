@@ -9,6 +9,7 @@ function closeAnyOpenModal() {
     if (!document.getElementById('scanner-modal').classList.contains('hidden')) { closeScanner(); return true; }
     if (!document.getElementById('spool-modal').classList.contains('hidden')) { closeModal(); return true; }
     if (!document.getElementById('qr-modal').classList.contains('hidden')) { closeQrModal(); return true; }
+    if (!document.getElementById('reserve-modal').classList.contains('hidden')) { closeReserveModal(); return true; }
     if (!document.getElementById('shortcuts-modal').classList.contains('hidden')) { toggleShortcutsHelp(); return true; }
     return false;
 }

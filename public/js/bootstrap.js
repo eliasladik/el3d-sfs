@@ -25,7 +25,7 @@ window.addEventListener('DOMContentLoaded', () => {
             currentUser = data.username;
             currentEmail = data.email;
             currentRole = data.role || 'admin';
-            materialTypes = data.config.materialTypes; lowStockLimit = data.config.lowStockLimit; defaultExpandMode = data.config.defaultExpandMode;
+            materialTypes = data.config.materialTypes; lowStockLimit = data.config.lowStockLimit; defaultExpandMode = data.config.defaultExpandMode; printers = data.config.printers || [];
             applyRoleUI();
             return loadDataFromServer();
         }).then(() => {
